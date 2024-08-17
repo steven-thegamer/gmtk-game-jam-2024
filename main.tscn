@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cfr4g816ylfg3"]
+[gd_scene load_steps=15 format=3 uid="uid://cfr4g816ylfg3"]
 
 [ext_resource type="PackedScene" uid="uid://dqx641hjwmm6e" path="res://player/player.tscn" id="1_h63uo"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="1_rwdg1"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="4_2rcjf"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="5_d2jov"]
 [ext_resource type="Script" path="res://laser.gd" id="6_qb2kb"]
+[ext_resource type="PackedScene" uid="uid://b1chfskhe71u7" path="res://object.tscn" id="7_31gig"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jiwv1"]
 
@@ -95,3 +96,15 @@ transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, 0, -4.37114e-08, 1, 8.7422
 height = 1.0
 cone = true
 material = SubResource("StandardMaterial3D_5vmvv")
+
+[node name="Object" parent="." instance=ExtResource("7_31gig")]
+transform = Transform3D(1, 0, 0, 0, 2.8, 0, 0, 0, 1, 7, 2, 9)
+axis_scale_by = Vector3(0, 1, 0)
+
+[node name="Object2" parent="." instance=ExtResource("7_31gig")]
+transform = Transform3D(1, 0, 0, 0, 2.8, 0, 0, 0, 1, 7, 2, 6)
+axis_scale_by = Vector3(0, 1, 0)
+
+[node name="Object3" parent="." instance=ExtResource("7_31gig")]
+transform = Transform3D(1, 0, 0, 0, -1.95827e-07, -1, 0, 4.48, -4.37114e-08, 7, 4, 7.51631)
+axis_scale_by = Vector3(0, 1, 0)

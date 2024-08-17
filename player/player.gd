@@ -4,12 +4,15 @@ extends CharacterBody3D
 @onready var eyes = $Eyes
 @export var target_node : Node3D
 
+
 const SPEED = 5.0
 const ROTATION_SPEED = 5.0
 const JUMP_VELOCITY = 5.0
 const FRICTION = 0.5
+const SIZE_CHANGE_SPEED = 0.04
 
 var is_firing: bool = false
+var shrinking: bool = false
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -38,23 +41,12 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == 1:
+	if event is InputEventMouseButton and (event.button_index == 1 or event.button_index == 2):
+		shrinking = event.button_index == 2
 		if event.is_pressed() and not is_firing:
 			fire_laser()
 		else:
 			stop_firing()
-
-
-func direction_to_euler(vector: Vector3) -> Vector3:
-	# Normalize the vector
-	vector = vector.normalized()
-	# Calculate yaw (ψ)
-	var yaw = atan2(vector.y, vector.x)
-	# Calculate pitch (θ)
-	var pitch = asin(-vector.z)
-	# Roll (φ) is typically zero for direction vectors
-	var roll = 0
-	return Vector3(yaw, pitch, roll)
 
 
 func update_laser(length: float = 100) -> void:
@@ -66,12 +58,20 @@ func update_laser(length: float = 100) -> void:
 	var space = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to)
 	var result = space.intersect_ray(query)
-	
+	# Update the laser position and target
 	var target = to
 	if result:
 		target = result.position
 	target_node.global_position = target
 	laser.global_position = eyes.global_position
+
+	var hit_node : Node = result.collider
+	if hit_node.is_in_group("sizeable"):
+		change_object_size(hit_node)
+
+
+func change_object_size(object: Node3D) -> void:
+	object.change_size(-SIZE_CHANGE_SPEED if shrinking else SIZE_CHANGE_SPEED)
 
 
 func fire_laser() -> void:
