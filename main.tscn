@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://cfr4g816ylfg3"]
+[gd_scene load_steps=14 format=3 uid="uid://cfr4g816ylfg3"]
 
 [ext_resource type="PackedScene" uid="uid://dqx641hjwmm6e" path="res://player/player.tscn" id="1_h63uo"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="1_rwdg1"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="3_o5x27"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="4_2rcjf"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="5_d2jov"]
+[ext_resource type="Script" path="res://laser.gd" id="6_qb2kb"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jiwv1"]
 
@@ -38,8 +39,12 @@ projection = 0
 fov = 75.0
 size = 1.0
 frustum_offset = Vector2(0, 0)
-near = 0.05
+near = 0.001
 far = 4000.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vmvv"]
+transparency = 1
+albedo_color = Color(1, 0, 0, 0.603922)
 
 [node name="Main" type="Node3D"]
 
@@ -52,6 +57,7 @@ shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.748304, -0.348377, 0.564512, 0, 0.850995, 0.525173, -0.663356, -0.392989, 0.636803, 11.766, 13.8604, 13.2727)
+near = 0.001
 
 [node name="PhantomCameraHost" type="Node" parent="Camera3D"]
 script = ExtResource("1_rwdg1")
@@ -65,11 +71,23 @@ shape = SubResource("BoxShape3D_7skuu")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0)
 size = Vector3(28, 1, 25)
 
-[node name="Player" parent="." instance=ExtResource("1_h63uo")]
+[node name="Player" parent="." node_paths=PackedStringArray("laser", "target_node") instance=ExtResource("1_h63uo")]
 transform = Transform3D(0.201, -2.56431e-05, 1.75938e-05, 2.56431e-05, 0.201, -2.83739e-05, -1.75938e-05, 2.83739e-05, 0.201, 0, 2.9144, 0)
+laser = NodePath("../Laser")
+target_node = NodePath("../Target")
 
 [node name="PhantomCamera3D" type="Node3D" parent="."]
 transform = Transform3D(0.748304, -0.348377, 0.564512, 0, 0.850995, 0.525173, -0.663356, -0.392989, 0.636803, 11.766, 13.8604, 13.2727)
 script = ExtResource("3_o5x27")
 tween_resource = SubResource("Resource_ib1r3")
 camera_3d_resource = SubResource("Resource_bwifg")
+
+[node name="Laser" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.23914, 0.970037, 8.81468)
+visible = false
+radius = 0.103
+height = 1.0
+material = SubResource("StandardMaterial3D_5vmvv")
+script = ExtResource("6_qb2kb")
+
+[node name="Target" type="Node3D" parent="."]
