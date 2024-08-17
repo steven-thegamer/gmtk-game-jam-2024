@@ -1,0 +1,76 @@
+[gd_scene load_steps=12 format=3 uid="uid://cfr4g816ylfg3"]
+
+[ext_resource type="PackedScene" uid="uid://dqx641hjwmm6e" path="res://player/player.tscn" id="1_h63uo"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="1_rwdg1"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="3_o5x27"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="4_2rcjf"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="5_d2jov"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jiwv1"]
+
+[sub_resource type="Sky" id="Sky_gatvo"]
+sky_material = SubResource("ProceduralSkyMaterial_jiwv1")
+
+[sub_resource type="Environment" id="Environment_m4tnu"]
+background_mode = 2
+sky = SubResource("Sky_gatvo")
+tonemap_mode = 3
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7skuu"]
+size = Vector3(27, 1, 25)
+
+[sub_resource type="Resource" id="Resource_2t7wo"]
+script = ExtResource("4_2rcjf")
+duration = 1.0
+transition = 0
+ease = 2
+
+[sub_resource type="Resource" id="Resource_bwifg"]
+script = ExtResource("5_d2jov")
+cull_mask = 1048575
+h_offset = 0.0
+v_offset = 0.0
+projection = 0
+fov = 75.0
+size = 1.0
+frustum_offset = Vector2(0, 0)
+near = 0.05
+far = 4000.0
+
+[node name="Main" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_m4tnu")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.629605, 0.776915, 0, -0.776915, 0.629605, 0, 4.94712, 3.94414)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.748697, -0.452468, 0.484485, -1.49012e-08, 0.730842, 0.682546, -0.662913, -0.51102, 0.547179, 7.91131, 13.8604, 8.93507)
+
+[node name="PhantomCameraHost" type="Node" parent="Camera3D"]
+script = ExtResource("1_rwdg1")
+
+[node name="Ground" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_7skuu")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0)
+size = Vector3(28, 1, 25)
+
+[node name="Player" parent="." instance=ExtResource("1_h63uo")]
+
+[node name="PhantomCamera3D" type="Node3D" parent="." node_paths=PackedStringArray("look_at_target")]
+transform = Transform3D(0.748697, -0.452468, 0.484485, -1.49012e-08, 0.730842, 0.682546, -0.662913, -0.51102, 0.547179, 7.91131, 13.8604, 8.93507)
+script = ExtResource("3_o5x27")
+look_at_mode = 2
+look_at_target = NodePath("../Player")
+tween_resource = SubResource("Resource_2t7wo")
+camera_3d_resource = SubResource("Resource_bwifg")
