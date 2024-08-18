@@ -60,13 +60,14 @@ func update_laser(length: float = 100) -> void:
 	var result = space.intersect_ray(query)
 	# Update the laser position and target
 	var target = to
+	var hit_node : Node
 	if result:
 		target = result.position
+		hit_node = result.collider
 	target_node.global_position = target
 	laser.global_position = eyes.global_position
-
-	var hit_node : Node = result.collider
-	if hit_node.is_in_group("sizeable"):
+	
+	if hit_node and hit_node.is_in_group("sizeable"):
 		change_object_size(hit_node)
 
 
